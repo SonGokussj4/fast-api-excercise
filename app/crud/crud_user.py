@@ -14,6 +14,9 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def get_by_id(self, db: Session, *, user_id: int) -> Optional[User]:
         return db.query(User).filter(User.Id == user_id).first()
 
+    def get_all(self, db: Session) -> Optional[User]:
+        return db.query(User).all()
+
     # def update(
     #     self, db: Session, *, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
     # ) -> User:

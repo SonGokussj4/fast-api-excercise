@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from pydantic import BaseModel, EmailStr, HttpUrl
 
@@ -30,3 +30,8 @@ class UserInDBBase(UserBase):
 # Additional properties to return via API
 class User(UserInDBBase):
     pass
+
+
+class UserSearchResults(BaseModel):
+    results: Sequence[User]
+    count: int

@@ -3,44 +3,38 @@
 # uvicorn main:app --reload
 # gunicorn -w 4 -k uvicorn.workers.UvicornWorker  main:app --reload
 
+import time
+import uvicorn
 from typing import List
 from urllib.request import Request
-import uvicorn
-import time
-
-from app import crud
-
 from fastapi import Depends, FastAPI, APIRouter
-from pydantic import BaseModel, BaseConfig
 from sqlalchemy.orm import Session
 
-from app.api import deps
-from app.models.user import User
+from app.api.api_v1.api import api_router
+from app.core.config import settings
 
 
-BaseConfig.arbitrary_types_allowed = True
+# BaseConfig.arbitrary_types_allowed = True
+app = FastAPI(title="CSFD FAST API")
+
+root_router = APIRouter()
 
 
-app = FastAPI(
-    title="CSFD FAST API",
-    # openapi_url="/openapi.json"
-)
-
-api_router = APIRouter()
-
-
-@api_router.get("/", status_code=200)
+@root_router.get("/", status_code=200)
 def home():
     return {"Hello": "World"}
 
 
-@api_router.get("/users/{user_id}", status_code=200)
-async def fetch_user(*, user_id: int, db: Session = Depends(deps.get_db)) -> dict:  # 3
-    """
-    Fetch a single recipe by ID
-    """
-    user = crud.user.get_by_id(db, user_id=user_id)
-    return user
+# @root_router.get("/", status_code=200)
+# def root(request: Request, db: Session = Depends(deps.get_db)) -> dict:
+#     """
+#     Root GET
+#     """
+#     recipes = crud.recipe.get_multi(db=db, limit=10)
+#     return TEMPLATES.TemplateResponse(
+#         "index.html",
+#         {"request": request, "recipes": recipes},
+#     )
 
 
 @app.middleware("http")
@@ -52,7 +46,8 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-app.include_router(api_router)
+app.include_router(root_router)
+app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
 if __name__ == "__main__":
