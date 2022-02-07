@@ -15,7 +15,7 @@ async def fetch_all_users(*, db: Session = Depends(deps.get_db)) -> dict:
     """
     Fetch all Users
     """
-    users = crud.user.get_all(db)
+    users = await crud.user.get_all(db)
     return {
         "results": users,
         "count": len(users)

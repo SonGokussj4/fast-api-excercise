@@ -11,10 +11,10 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     # def get_by_email(self, db: Session, *, email: str) -> Optional[User]:
     #     return db.query(User).filter(User.email == email).first()
 
-    def get_by_id(self, db: Session, *, user_id: int) -> Optional[User]:
+    async def get_by_id(self, db: Session, *, user_id: int) -> Optional[User]:
         return db.query(User).filter(User.Id == user_id).first()
 
-    def get_all(self, db: Session) -> Optional[User]:
+    async def get_all(self, db: Session) -> Optional[User]:
         return db.query(User).all()
 
     # def update(
