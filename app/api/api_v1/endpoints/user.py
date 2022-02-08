@@ -6,7 +6,8 @@ from app import crud
 from app.api import deps
 # from app.schemas.user import Recipe, RecipeCreate, RecipeSearchResults
 from app.schemas.user import User, UserSearchResults
-from app.schemas.movie import Movie
+from app.schemas.rating import RatingSearchResults, UserRatings
+
 
 router = APIRouter()
 
@@ -28,8 +29,7 @@ async def fetch_user_by_id(*, user_id: int, db: Session = Depends(deps.get_db)) 
     """
     Fetch a single user by ID
     """
-    user = await crud.user.get_by_id(db, user_id=user_id)
-    return user
+    return await crud.user.get_by_id(db, user_id=user_id)
 
 
 @router.get("/{username:str}", status_code=200, response_model=User)
@@ -37,17 +37,19 @@ async def fetch_user_by_username(*, username: str, db: Session = Depends(deps.ge
     """
     Fetch a single user by username
     """
-    user = await crud.user.get_by_username(db, username=username)
-    return user
+    return await crud.user.get_by_username(db, username=username)
 
 
-@router.get("/{username:str}/ratings", status_code=200, response_model=Movie)
+@router.get("/{username:str}/ratings", status_code=200, response_model=UserRatings)  # , response_model=UserRatings
 async def fetch_user_ratings(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
     """
     Fetch watched and rated movies of selected username
     """
-    user = await crud.user.get_ratings_by_username(db, username=username)
-    return user
+    ratings = await crud.user.get_ratings_by_username(db, username=username)
+    return {
+        "results": ratings,
+        "count": len(ratings)
+    }
 
 # @router.get("/{recipe_id}", status_code=200, response_model=Recipe)
 # def fetch_recipe(

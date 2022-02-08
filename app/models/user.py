@@ -22,10 +22,8 @@ class User(Base):
     Username = Column(Unicode(50), unique=True, nullable=False)
     Realname = Column(Unicode(50), unique=False, nullable=True)
     AvatarUrl = Column(Unicode(255), unique=True, nullable=True)
-    # UserRatings = relationship(
-    #     'UserRating',
-    #     backref="Users"
-    # )
+
+    Ratings = relationship("Rating", back_populates="User")  # lazy="dynamic"
 
     # # Many-to-many
     # Movies = relationship('Movie', secondary=user_movie, backref='Users')

@@ -24,6 +24,8 @@ class Movie(Base):
     GenresJson = Column(JSON)
     ChildrenJson = Column(JSON)
 
+    Ratings = relationship("Rating", back_populates="Movie")  # lazy="dynamic"
+
     # Many-to-many
     # Genres = relationship('Genre', secondary=movie_genre, backref='Movies')
 
