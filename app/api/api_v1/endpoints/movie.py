@@ -4,50 +4,48 @@ from typing import Any, Optional
 
 from app import crud
 from app.api import deps
-# from app.schemas.user import Recipe, RecipeCreate, RecipeSearchResults
-from app.schemas.user import User, UserSearchResults
-from app.schemas.movie import Movie
+from app.schemas.movie import Movie, MovieSearchResults
 
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=UserSearchResults)
-async def fetch_all_users(*, db: Session = Depends(deps.get_db)) -> dict:
+@router.get("/", status_code=200, response_model=MovieSearchResults)
+async def fetch_all_movies(*, db: Session = Depends(deps.get_db)) -> dict:
     """
-    Fetch all Users
+    Fetch all Movies
     """
-    users = await crud.user.get_all(db)
+    movies = await crud.movie.get_all(db)
     return {
-        "results": users,
-        "count": len(users)
+        "results": movies,
+        "count": len(movies)
     }
 
 
-@router.get("/{user_id:int}", status_code=200, response_model=User)
-async def fetch_user_by_id(*, user_id: int, db: Session = Depends(deps.get_db)) -> dict:
-    """
-    Fetch a single user by ID
-    """
-    user = await crud.user.get_by_id(db, user_id=user_id)
-    return user
+# @router.get("/{user_id:int}", status_code=200, response_model=User)
+# async def fetch_user(*, user_id: int, db: Session = Depends(deps.get_db)) -> dict:
+#     """
+#     Fetch a single user by ID
+#     """
+#     user = await crud.user.get_by_id(db, user_id=user_id)
+#     return user
 
 
-@router.get("/{username:str}", status_code=200, response_model=User)
-async def fetch_user_by_username(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
-    """
-    Fetch a single user by username
-    """
-    user = await crud.user.get_by_username(db, username=username)
-    return user
+# @router.get("/{username:str}", status_code=200, response_model=User)
+# async def fetch_user(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
+#     """
+#     Fetch a single user by username
+#     """
+#     user = await crud.user.get_by_username(db, username=username)
+#     return user
 
 
-@router.get("/{username:str}/ratings", status_code=200, response_model=Movie)
-async def fetch_user_ratings(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
-    """
-    Fetch watched and rated movies of selected username
-    """
-    user = await crud.user.get_ratings_by_username(db, username=username)
-    return user
+# @router.get("/{username:str}/ratings", status_code=200, response_model=Movie)
+# async def fetch_user_ratings(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
+#     """
+#     Fetch watched and rated movies of selected username
+#     """
+#     user = await crud.user.get_ratings_by_username(db, username=username)
+#     return user
 
 # @router.get("/{recipe_id}", status_code=200, response_model=Recipe)
 # def fetch_recipe(

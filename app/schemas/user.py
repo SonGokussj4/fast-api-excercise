@@ -6,7 +6,7 @@ from pydantic import BaseModel, EmailStr, HttpUrl
 class UserBase(BaseModel):
     Username: str
     Realname: Optional[str] = None
-    Url: Optional[str] = None
+    Url: str = None
     AvatarUrl: Optional[str] = None
 
 
