@@ -4,6 +4,7 @@ from typing import Optional, Sequence
 from pydantic import BaseModel, EmailStr, HttpUrl
 from sqlalchemy import JSON, DateTime, Boolean
 from app.schemas.user import User
+from app.schemas.movie import Movie
 
 # from pydantic import BaseModel, validator
 # from sqlalchemy.orm import Query
@@ -50,6 +51,11 @@ class RatingUpdate(RatingBase):
 class Rating(RatingBase):
     pass
 
+class UserRating(RatingBase):
+    MovieTitle: Optional[str]
+    Username: Optional[str]
+    pass
+
 
 class RatingSearchResults(BaseModel):
     results: Sequence[RatingBaseWithUser]
@@ -57,5 +63,5 @@ class RatingSearchResults(BaseModel):
 
 
 class UserRatings(BaseModel):
-    results: Sequence[Rating]
+    results: Sequence[UserRating]
     count: int

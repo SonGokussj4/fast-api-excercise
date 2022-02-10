@@ -5,7 +5,7 @@ from typing import Any, Optional
 from app import crud
 from app.api import deps
 # from app.schemas.user import Recipe, RecipeCreate, RecipeSearchResults
-from app.schemas.user import User, UserSearchResults
+from app.schemas.user import User, UserCreate, UserSearchResults
 from app.schemas.rating import RatingSearchResults, UserRatings
 
 
@@ -50,6 +50,15 @@ async def fetch_user_ratings(*, username: str, db: Session = Depends(deps.get_db
         "results": ratings,
         "count": len(ratings)
     }
+
+
+@router.post("/{username:str}", status_code=200, response_model=UserCreate)
+async def create_user(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
+    """
+    Create user
+    """
+    user = await crud.user.create_user(db)
+    return user
 
 # @router.get("/{recipe_id}", status_code=200, response_model=Recipe)
 # def fetch_recipe(

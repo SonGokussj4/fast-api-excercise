@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
 from app.models.user import User
+from app.models.movie import Movie
 from app.models.rating import Rating
 from app.schemas.user import UserCreate, UserUpdate
 
@@ -25,7 +26,19 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     async def get_ratings_by_username(self, db: Session, *, username: str) -> Optional[User]:
         # user = db.query(User).filter(func.lower(User.Username) == func.lower(username)).first()
         # return db.query(Rating).filter(user.Id == Rating.UserId).all()
-        return db.query(Rating).join(User).filter(func.lower(User.Username) == func.lower(username)).all()
+        result =  db.query(Rating).join(User).filter(func.lower(User.Username) == func.lower(username)).all()
+        for item in result:
+            movie = db.query(Movie).filter(Movie.Id == item.MovieId).first()
+            item.MovieTitle = movie.Title
+            user = db.query(User).filter(User.Id == item.UserId).first()
+            item.Username = user.Username
+        return result
+
+    async def create_user(self, db: Session) -> Optional[User]:
+        # user = db.query(User).filter(func.lower(User.Username) == func.lower(username)).first()
+        # return db.query(Rating).filter(user.Id == Rating.UserId).all()
+        res = await User.objects.get_or_create("sasa")
+        return res
 
     # def update(
     #     self, db: Session, *, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
