@@ -24,12 +24,16 @@ async def fetch_all_users(*, db: Session = Depends(deps.get_db)) -> dict:
     }
 
 
-@router.get("/{user_id:int}", status_code=200, response_model=User)
+@router.get("/{user_id:int}", status_code=200, response_model=User, summary="Fetch a User by ID")
 async def fetch_user_by_id(*, user_id: int, db: Session = Depends(deps.get_db)) -> dict:
     """
     Fetch a single user by ID
     """
-    return await crud.user.get_by_id(db, user_id=user_id)
+    user = await crud.user.get_by_id(db, user_id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
 
 
 @router.get("/{username:str}", status_code=200, response_model=User)
@@ -37,7 +41,10 @@ async def fetch_user_by_username(*, username: str, db: Session = Depends(deps.ge
     """
     Fetch a single user by username
     """
-    return await crud.user.get_by_username(db, username=username)
+    user = await crud.user.get_by_username(db, username=username)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 
 @router.get("/{username:str}/ratings", status_code=200, response_model=UserRatings)  # , response_model=UserRatings
