@@ -12,10 +12,20 @@ from sqlalchemy.orm import Session
 
 from app.api.api_v1.api import api_router
 from app.core.config import settings
+from starlette.middleware.cors import CORSMiddleware
 
 
 # BaseConfig.arbitrary_types_allowed = True
 app = FastAPI(title="CSFD FAST API")
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 root_router = APIRouter()
 
