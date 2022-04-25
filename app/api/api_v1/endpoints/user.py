@@ -35,6 +35,17 @@ async def fetch_user_by_id(*, user_id: int, db: Session = Depends(deps.get_db)) 
     return user
 
 
+@router.post("/", status_code=200, response_model=User, summary="Add a User")
+async def add_user(*, user: User, db: Session = Depends(deps.get_db)) -> dict:
+    """
+    Add a user to DB
+    """
+    added_user = await crud.user.add_user(db, user=user)
+    print(f'added_user: {added_user}')
+    if not added_user:
+        raise HTTPException(status_code=404, detail=f"User {user.Username} couldn't be added")
+    return added_user
+
 
 @router.get("/{username:str}", status_code=200, response_model=User)
 async def fetch_user_by_username(*, username: str, db: Session = Depends(deps.get_db)) -> dict:

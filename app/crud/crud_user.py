@@ -1,4 +1,5 @@
 from typing import Any, Dict, Optional, Union
+from fastapi import HTTPException
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -18,6 +19,23 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     async def get_by_id(self, db: Session, *, user_id: int) -> Optional[User]:
         return db.query(User).filter(User.Id == user_id).first()
+
+    async def add_user(self, db: Session, *, user: User) -> Optional[User]:
+        db_user = await self.get_by_username(db, username=user.Username)
+        if db_user:
+            raise HTTPException(status_code=400, detail="User already exists")
+
+        new_user = User(
+            Id=user.Id,
+            Url=user.Url,
+            Username=user.Username,
+            Realname=user.Realname,
+            AvatarUrl=user.AvatarUrl,
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return new_user
 
     async def get_by_username(self, db: Session, *, username: str) -> Optional[User]:
         return db.query(User).filter(func.lower(User.Username) == func.lower(username)).first()
