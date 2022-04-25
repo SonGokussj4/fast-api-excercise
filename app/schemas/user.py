@@ -5,9 +5,9 @@ from pydantic import BaseModel, EmailStr, HttpUrl, constr
 
 class UserBase(BaseModel):
     Id: int
+    Url: str = None
     Username: constr(max_length=50)
     Realname: Optional[str] = None
-    Url: str = None
     AvatarUrl: Optional[str] = None
 
     class Config:

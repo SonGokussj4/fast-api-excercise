@@ -20,7 +20,7 @@ app = FastAPI(title="CSFD FAST API")
 root_router = APIRouter()
 
 
-@root_router.get("/", status_code=200)
+@root_router.get("/", status_code=200, include_in_schema=False)
 def home():
     return {"Hello": "World"}
 
