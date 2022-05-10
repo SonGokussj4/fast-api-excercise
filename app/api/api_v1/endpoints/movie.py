@@ -15,37 +15,37 @@ async def fetch_all_movies(*, db: Session = Depends(deps.get_db)) -> dict:
     Fetch all Movies
     """
     movies = await crud.movie.get_all(db)
+    if not movies:
+        raise HTTPException(status_code=404, detail="No movies found")
     return {
         "results": movies,
         "count": len(movies)
     }
 
 
-# @router.get("/{user_id:int}", status_code=200, response_model=User)
-# async def fetch_user(*, user_id: int, db: Session = Depends(deps.get_db)) -> dict:
-#     """
-#     Fetch a single user by ID
-#     """
-#     user = await crud.user.get_by_id(db, user_id=user_id)
-#     return user
+
+@router.get("/{movie_id:int}", status_code=200, response_model=Movie)
+async def fetch_movie(*, movie_id: int, db: Session = Depends(deps.get_db)) -> dict:
+    """
+    Fetch one Movie
+    """
+    movie = await crud.movie.get_by_id(db, movie_id=movie_id)
+    if not movie:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    return movie
 
 
-# @router.get("/{username:str}", status_code=200, response_model=User)
-# async def fetch_user(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
-#     """
-#     Fetch a single user by username
-#     """
-#     user = await crud.user.get_by_username(db, username=username)
-#     return user
-
-
-# @router.get("/{username:str}/ratings", status_code=200, response_model=Movie)
-# async def fetch_user_ratings(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
-#     """
-#     Fetch watched and rated movies of selected username
-#     """
-#     user = await crud.user.get_ratings_by_username(db, username=username)
-#     return user
+@router.post("/", status_code=200, response_model=Movie, summary="Add a Movie")
+async def add_movie(*, movie: Movie, db: Session = Depends(deps.get_db)) -> dict:
+    """
+    Add a movie to DB
+    """
+    print("Adding movie: ", movie)
+    added_movie = await crud.movie.add_movie(db, movie=movie)
+    print(f'added_movie: {added_movie}')
+    if not added_movie:
+        raise HTTPException(status_code=404, detail=f"Movie {movie.Url} couldn't be added")
+    return added_movie
 
 # @router.get("/{recipe_id}", status_code=200, response_model=Recipe)
 # def fetch_recipe(

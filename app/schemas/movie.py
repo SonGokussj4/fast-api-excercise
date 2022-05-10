@@ -23,6 +23,7 @@ class MovieBase(BaseModel):
     LastUpdate: datetime
     GenresJson = JSON
     ChildrenJson = JSON
+    Genres: Optional[str] = None
 
 
 # Properties to receive via API on creation

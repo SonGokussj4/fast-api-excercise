@@ -1,6 +1,5 @@
-from sqlalchemy import Integer, String, Column, Boolean, Unicode, DateTime, JSON
+from sqlalchemy import Integer, String, Column, Boolean, Text, Unicode, DateTime, JSON
 from sqlalchemy.orm import relationship
-
 from app.db.base_class import Base
 
 
@@ -23,6 +22,7 @@ class Movie(Base):
     LastUpdate = Column(DateTime, unique=False, nullable=False)
     GenresJson = Column(JSON)
     ChildrenJson = Column(JSON)
+    Genres = Column(Unicode(255), unique=False, nullable=True)
 
     Ratings = relationship("Rating", back_populates="Movie")  # lazy="dynamic"
 

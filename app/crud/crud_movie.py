@@ -1,4 +1,6 @@
+import json
 from typing import Any, Dict, Optional, Union
+from fastapi import HTTPException
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -15,8 +17,36 @@ class CRUDMovie(CRUDBase[Movie, MovieCreate, MovieUpdate]):
     async def get_all(self, db: Session) -> Optional[Movie]:
         return db.query(Movie).all()
 
-    # async def get_by_id(self, db: Session, *, Movie_id: int) -> Optional[Movie]:
-    #     return db.query(Movie).filter(Movie.Id == Movie_id).first()
+    async def get_by_id(self, db: Session, movie_id: int) -> Optional[Movie]:
+        return db.query(Movie).filter(Movie.Id == movie_id).first()
+
+    async def add_movie(self, db: Session, *, movie: Movie) -> Optional[Movie]:
+        db_movie = await self.get_by_id(db, movie_id=movie.Id)
+        if db_movie:
+            raise HTTPException(status_code=400, detail="User already exists")
+
+        # print(f'[ DEBUG ] movie.GenresJson: {movie.GenresJson}')
+
+        new_movie = Movie(
+            Id=movie.Id,
+            Url=movie.Url,
+            Title=movie.Title,
+            Type=movie.Type,
+            Year=movie.Year,
+            Genres=movie.Genres,
+            GenresJson=json.loads(movie.Genres),
+            FanclubCount=movie.FanclubCount,
+            Country=movie.Country,
+            Duration=movie.Duration,
+            Rating=movie.Rating,
+            RatingCount=movie.RatingCount,
+            PosterUrl = movie.PosterUrl,
+            LastUpdate=movie.LastUpdate,
+        )
+        db.add(new_movie)
+        db.commit()
+        db.refresh(new_movie)
+        return new_movie
 
     # async def get_by_Moviename(self, db: Session, *, Moviename: str) -> Optional[Movie]:
     #     return db.query(Movie).filter(func.lower(Movie.Moviename) == func.lower(Moviename)).first()
