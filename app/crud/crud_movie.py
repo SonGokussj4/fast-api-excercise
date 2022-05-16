@@ -23,9 +23,7 @@ class CRUDMovie(CRUDBase[Movie, MovieCreate, MovieUpdate]):
     async def add_movie(self, db: Session, *, movie: Movie) -> Optional[Movie]:
         db_movie = await self.get_by_id(db, movie_id=movie.Id)
         if db_movie:
-            raise HTTPException(status_code=400, detail="User already exists")
-
-        # print(f'[ DEBUG ] movie.GenresJson: {movie.GenresJson}')
+            raise HTTPException(status_code=400, detail="Movie already exists")
 
         new_movie = Movie(
             Id=movie.Id,
@@ -42,6 +40,10 @@ class CRUDMovie(CRUDBase[Movie, MovieCreate, MovieUpdate]):
             RatingCount=movie.RatingCount,
             PosterUrl = movie.PosterUrl,
             LastUpdate=movie.LastUpdate,
+            parentid=movie.parentid,
+            SeasonId=movie.SeasonId,
+            EpisodesCount=movie.EpisodesCount,
+            SeasonsCount=movie.SeasonsCount,
         )
         db.add(new_movie)
         db.commit()

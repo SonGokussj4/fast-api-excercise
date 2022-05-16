@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, Optional
 
@@ -29,9 +29,12 @@ async def fetch_movie(*, movie_id: int, db: Session = Depends(deps.get_db)) -> d
     """
     Fetch one Movie
     """
+    print("[ DEBUG] Getting movie by id: ", movie_id)
     movie = await crud.movie.get_by_id(db, movie_id=movie_id)
+    print(f'[ DEBUG] movie: {movie}')
     if not movie:
-        raise HTTPException(status_code=404, detail="Movie not found")
+        return Response(status_code=204)
+        # raise HTTPException(status_code=204, detail="Movie not found")
     return movie
 
 
@@ -40,6 +43,7 @@ async def add_movie(*, movie: Movie, db: Session = Depends(deps.get_db)) -> dict
     """
     Add a movie to DB
     """
+    print("[ DEBUG] Adding...")
     print("Adding movie: ", movie)
     added_movie = await crud.movie.add_movie(db, movie=movie)
     print(f'added_movie: {added_movie}')
