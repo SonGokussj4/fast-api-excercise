@@ -78,6 +78,14 @@ async def patch_user_ratings_by_id(*, user_id: int, movie_id: int, body: dict, d
     ratings = await crud.rating.patch_ratings_by_id(db, user_id=user_id, movie_id=movie_id, body=body)
     return ratings
 
+@router.delete("/{user_id:int}/ratings/{movie_id}", status_code=200)
+async def delete_user_ratings_by_id(*, user_id: int, movie_id: int, db: Session = Depends(deps.get_db)) -> dict:
+    """
+    Delete user <user_id> rating for movie <movie_id>
+    """
+    ratings = await crud.rating.delete_ratings_by_id(db, user_id=user_id, movie_id=movie_id)
+    return ratings
+
 @router.get("/{username:str}/ratings", status_code=200, response_model=UserRatings)  # , response_model=UserRatings
 async def fetch_user_ratings_by_username(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
     """

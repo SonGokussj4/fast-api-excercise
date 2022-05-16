@@ -34,6 +34,16 @@ class CRUDRating(CRUDBase[Rating, RatingCreate, RatingUpdate]):
         db.commit()
         return db_rating
 
+    async def delete_ratings_by_id(self, db: Session, *, user_id: int, movie_id: int) -> Optional[Rating]:
+        print(f"[ DELETE ] crud_user.delete_ratings_by_id(user_id={user_id}, movie_id={movie_id}):")
+        db_rating: Rating = db.query(Rating).filter(Rating.MovieId == movie_id).filter(Rating.UserId == user_id).first()
+        if not db_rating:
+            raise HTTPException(status_code=404, detail="Rating not found")
+
+        db.delete(db_rating)
+        db.commit()
+        return db_rating
+
     async def add_rating(self, db: Session, *, rating: Rating) -> Optional[Rating]:
         print("[ DEBUG} crud_rating.add_rating()")
         db_rating = await self.get_by_id(db, user_id=rating.UserId, movie_id=rating.MovieId)
