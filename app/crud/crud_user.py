@@ -8,6 +8,7 @@ from app.crud.base import CRUDBase
 from app.models.user import User
 from app.models.movie import Movie
 from app.models.rating import Rating
+from app.schemas.rating import UserRating
 from app.schemas.user import UserCreate, UserUpdate
 
 
@@ -40,6 +41,17 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     async def get_by_username(self, db: Session, *, username: str) -> Optional[User]:
         return db.query(User).filter(func.lower(User.Username) == func.lower(username)).first()
+
+
+    async def get_ratings_by_id(self, db: Session, *, id: str) -> Optional[User]:
+        result =  db.query(Rating).join(User).filter(User.Id == id).all()
+        for item in result:
+            item: UserRating
+            movie = db.query(Movie).filter(Movie.Id == item.MovieId).first()
+            item.MovieTitle = movie.Title
+            user = db.query(User).filter(User.Id == item.UserId).first()
+            item.Username = user.Username
+        return result
 
     async def get_ratings_by_username(self, db: Session, *, username: str) -> Optional[User]:
         # user = db.query(User).filter(func.lower(User.Username) == func.lower(username)).first()

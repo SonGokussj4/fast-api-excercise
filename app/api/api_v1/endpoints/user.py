@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 from app import crud
 from app.api import deps
+from app.models.rating import Rating
 # from app.schemas.user import Recipe, RecipeCreate, RecipeSearchResults
 from app.schemas.user import User, UserCreate, UserSearchResults
 from app.schemas.rating import RatingSearchResults, UserRatings
@@ -58,8 +59,27 @@ async def fetch_user_by_username(*, username: str, db: Session = Depends(deps.ge
     return user
 
 
+@router.get("/{id:int}/ratings", status_code=200, response_model=UserRatings)
+async def fetch_user_ratings_by_id(*, id: int, db: Session = Depends(deps.get_db)) -> dict:
+    """
+    Fetch watched and rated movies of selected user id
+    """
+    ratings = await crud.user.get_ratings_by_id(db, id=id)
+    return {
+        "results": ratings,
+        "count": len(ratings)
+    }
+
+@router.patch("/{user_id:int}/ratings/{movie_id}", status_code=200)
+async def patch_user_ratings_by_id(*, user_id: int, movie_id: int, body: dict, db: Session = Depends(deps.get_db)) -> dict:
+    """
+    Patch user <user_id> rating for movie <movie_id>
+    """
+    ratings = await crud.rating.patch_ratings_by_id(db, user_id=user_id, movie_id=movie_id, body=body)
+    return ratings
+
 @router.get("/{username:str}/ratings", status_code=200, response_model=UserRatings)  # , response_model=UserRatings
-async def fetch_user_ratings(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
+async def fetch_user_ratings_by_username(*, username: str, db: Session = Depends(deps.get_db)) -> dict:
     """
     Fetch watched and rated movies of selected username
     """
