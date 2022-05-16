@@ -11,7 +11,7 @@ class Rating(Base):
 
     Id = Column(Integer, primary_key=True)
     Rating = Column(Integer, nullable=False)
-    Date = Column(DateTime, nullable=False)
+    Date = Column(DateTime, nullable=True)
     Computed = Column(Boolean, nullable=True)
     LastUpdate = Column(DateTime, nullable=False)
 

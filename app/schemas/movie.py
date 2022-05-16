@@ -24,6 +24,7 @@ class MovieBase(BaseModel):
     GenresJson = JSON
     ChildrenJson = JSON
     Genres: Optional[str] = None
+    parentid: Optional[int] = None
 
 
 # Properties to receive via API on creation

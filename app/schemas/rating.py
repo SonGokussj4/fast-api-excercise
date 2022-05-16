@@ -10,7 +10,7 @@ from app.schemas.movie import Movie
 # from sqlalchemy.orm import Query
 
 class RatingBase(BaseModel):
-    Id: int
+    # Id: int
     Rating: int
     Date: datetime
     Computed: Optional[bool]

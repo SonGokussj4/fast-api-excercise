@@ -23,6 +23,7 @@ class Movie(Base):
     GenresJson = Column(JSON)
     ChildrenJson = Column(JSON)
     Genres = Column(Unicode(255), unique=False, nullable=True)
+    parentid = Column(Integer, unique=False, nullable=True)
 
     Ratings = relationship("Rating", back_populates="Movie")  # lazy="dynamic"
 
